@@ -1,0 +1,90 @@
+{
+  "connections": [
+    {
+      "host": "192.168.2.21",
+      "port": 4000,
+      "routes": {
+        "cors": true
+      },
+      "router": {
+        "stripTrailingSlash": true
+      }
+    }
+  ],
+  "registrations": [
+    {
+      "plugin": {
+        "register": "hapi-mongojs",
+        "options": {
+          "url": "mongodb://localhost:27017/babyshop",
+          "collections": [
+            {
+              "name": "products"
+            },
+            {
+              "name": "accounts"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "plugin": {
+        "register": "hapi-auth-jwt2"
+      }
+    },
+    {
+      "plugin": {
+        "register": "hapi-cors",
+        "options": {
+          "origins": ["http://192.168.2.21:3006"],
+          "headers": ["Accept", "Content-Type", "Authorization"]
+        }
+      }
+    },
+    {
+      "plugin": "inert"
+    },
+    {
+      "plugin": "./auth"
+    },
+    {
+      "plugin": "./api",
+      "options": {
+        "routes": {
+          "prefix": "/api"
+        }
+      }
+    },
+    {
+      "plugin": "./static"
+    },
+    {
+      "plugin": {
+        "register": "good",
+        "options": {
+          "ops": {
+            "interval": 60000
+          },
+          "reporters": {
+            "console": [
+              {
+                "module": "good-squeeze",
+                "name": "Squeeze",
+                "args": [
+                  {
+                    "error": "*"
+                  }
+                ]
+              },
+              {
+                "module": "good-console"
+              },
+              "stdout"
+            ]
+          }
+        }
+      }
+    }
+  ]
+}
